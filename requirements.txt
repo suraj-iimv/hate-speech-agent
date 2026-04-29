@@ -1,3 +1,5 @@
 transformers
 torch
 streamlit
+openai>=1.0.0
+requests
