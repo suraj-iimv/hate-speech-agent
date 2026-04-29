@@ -91,7 +91,7 @@ with st.form(key="input_form", clear_on_submit=False):
     user_input = st.text_input("", placeholder="Type something and press Enter...")
     submit = st.form_submit_button("Analyze")
 
-if analyze:
+if submit:
     if user_input.strip():
         with st.spinner("Analyzing..."):
             result = classify_text(user_input)
