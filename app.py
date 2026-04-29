@@ -108,4 +108,4 @@ if submit:
     else:
         st.markdown("<div class='result uncertain'>Please enter some text.</div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True) 
