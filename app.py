@@ -87,9 +87,9 @@ st.markdown("<div class='subtitle'>Analyze text for harmful or hateful content</
 
 st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-user_input = st.text_area("", placeholder="Type something...")
-
-analyze = st.button("Analyze")
+with st.form(key="input_form", clear_on_submit=False):
+    user_input = st.text_input("", placeholder="Type something and press Enter...")
+    submit = st.form_submit_button("Analyze")
 
 if analyze:
     if user_input.strip():
