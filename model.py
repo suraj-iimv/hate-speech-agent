@@ -1,25 +1,52 @@
 import streamlit as st
-from transformers import pipeline
+from openai import OpenAI
 
-MODEL_NAME = "Hate-speech-CNERG/dehatebert-mono-english"
-THRESHOLD = 0.70
+# OpenRouter client (same pattern as your reference code)
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=st.secrets["OPENROUTER_API_KEY"],
+)
 
-@st.cache_resource
-def load_model():
-    return pipeline("text-classification", model=MODEL_NAME)
+MODEL = "openai/gpt-oss-120b:free"
 
-classifier = load_model()
+def classify_text(text: str) -> str:
+    """
+    Returns one of:
+    - "Hate Speech"
+    - "Not Hate Speech"
+    - "Uncertain"
+    (with a short confidence note)
+    """
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {
+                "role": "user",
+                "content": (
+                    "Classify the following text as Hate Speech, Not Hate Speech, or Uncertain.\n"
+                    "Reply in exactly this format:\n"
+                    "LABEL: <Hate Speech|Not Hate Speech|Uncertain>\n"
+                    "CONFIDENCE: <0.00-1.00>\n\n"
+                    f"TEXT: {text}"
+                ),
+            }
+        ],
+    )
 
-def classify_text(text):
-    result = classifier(text)[0]
-    
-    label = result['label']
-    score = result['score']
-    
-    if score < THRESHOLD:
-        return f"Uncertain (confidence: {score:.2f})"
-    
-    if label == "HATE":
-        return f"Hate Speech (confidence: {score:.2f})"
-    else:
-        return f"Not Hate Speech (confidence: {score:.2f})"
+    content = (response.choices[0].message.content or "").strip()
+
+    # Simple parse (fallback-safe)
+    label = "Uncertain"
+    confidence = None
+    for line in content.splitlines():
+        if line.upper().startswith("LABEL:"):
+            label = line.split(":", 1)[1].strip()
+        if line.upper().startswith("CONFIDENCE:"):
+            try:
+                confidence = float(line.split(":", 1)[1].strip())
+            except:
+                confidence = None
+
+    if confidence is None:
+        return f"{label} (confidence: n/a)"
+    return f"{label} (confidence: {confidence:.2f})"
