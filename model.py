@@ -1,9 +1,8 @@
-from transformers import pipeline
-from config import MODEL_NAME, THRESHOLD
-
 import streamlit as st
 from transformers import pipeline
-from config import MODEL_NAME, THRESHOLD
+
+MODEL_NAME = "Hate-speech-CNERG/dehatebert-mono-english"
+THRESHOLD = 0.70
 
 @st.cache_resource
 def load_model():
