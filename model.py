@@ -1,7 +1,15 @@
 from transformers import pipeline
 from config import MODEL_NAME, THRESHOLD
 
-classifier = pipeline("text-classification", model=MODEL_NAME)
+import streamlit as st
+from transformers import pipeline
+from config import MODEL_NAME, THRESHOLD
+
+@st.cache_resource
+def load_model():
+    return pipeline("text-classification", model=MODEL_NAME)
+
+classifier = load_model()
 
 def classify_text(text):
     result = classifier(text)[0]
