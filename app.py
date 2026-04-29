@@ -96,16 +96,14 @@ if submit:
         with st.spinner("Analyzing..."):
             result = classify_text(user_input)
 
-        if "Hate Speech" in result:
-            st.markdown(f"<div class='result hate'>{result}</div>", unsafe_allow_html=True)
-
-        elif "Not Hate" in result:
+        if "Not Hate" in result:
             st.markdown(f"<div class='result safe'>{result}</div>", unsafe_allow_html=True)
-
+        elif "Hate Speech" in result:
+            st.markdown(f"<div class='result hate'>{result}</div>", unsafe_allow_html=True)
         else:
             st.markdown(f"<div class='result uncertain'>{result}</div>", unsafe_allow_html=True)
 
     else:
         st.markdown("<div class='result uncertain'>Please enter some text.</div>", unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True) 
+st.markdown("</div>", unsafe_allow_html=True)
